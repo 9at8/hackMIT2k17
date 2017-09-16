@@ -2,7 +2,8 @@ import path from 'path'
 import express from 'express'
 import bodyParser from 'body-parser'
 import { MongoClient, ObjectId } from 'mongodb'
-import axios from 'axios'
+
+import Amadeus from './amadeus'
 
 const app = express()
 app.use(bodyParser.json())
@@ -14,8 +15,14 @@ MongoClient.connect(url, (err, db) => {
   console.log('Connected to MongoDB!')
 })
 
+const AmadeusApp = new Amadeus({ app })
+
+app.post('/api/points-of-interest', (req, res) => {
+  AmadeusApp.pointsOfInterest(req, res)
+})
+
 app.get('/', function (req, res) {
-  res.send('Hello world!')
+  res.sendFile(path.resolve(__dirname, 'public/index.html'))
 })
 
 app.listen(3000)
