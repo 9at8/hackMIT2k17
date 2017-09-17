@@ -32,7 +32,8 @@ class App extends Component {
       position: null,
       numSelected: 0,
       selected: [],
-      suggesting: false
+      suggesting: false,
+      suggestions: []
     };
 
     this.loadMore = this.loadMore.bind(this);
@@ -135,10 +136,6 @@ class App extends Component {
       });
     });
 
-    this.setState({
-      elements: null,
-      suggesting: true
-    });
     const fetchData = {
       method: "POST",
       mode: "cors",
@@ -154,23 +151,36 @@ class App extends Component {
       })
       .then(res => {
         console.log(res);
+        this.setState({
+          suggestions: res.data,
+          suggesting: true,
+          elements: null
+        });
       });
   }
 
   render() {
-    const { elements, numSelected, position, suggesting } = this.state;
+    const {
+      elements,
+      numSelected,
+      position,
+      suggesting,
+      suggestions
+    } = this.state;
 
-    const dummyList = [0, 1, 2, 3, 4, 5];
-    const suggestions = dummyList.map(i => {
-      return (
-        <Suggestion
-          name="HackMIT"
-          lat="42.3584"
-          long="-71.09"
-          image="http://media.erickpinos.com/14-10-13-HackMIT-04-Tara-Lee-Technique.jpg"
-        />
-      );
-    });
+    let suggestions_list;
+    if (suggesting) {
+      suggestions_list = suggestions.map(suggestion => {
+        return (
+          <Suggestion
+            name={suggestion.name}
+            lat={suggestion.latitude}
+            long={suggestion.longitude}
+            image={location.image}
+          />
+        );
+      });
+    }
 
     return (
       <div className="App">
@@ -220,7 +230,7 @@ class App extends Component {
                 )}
               </Masonry>
             ) : suggesting ? (
-              suggestions
+              suggestions_list
             ) : null}
           </CSSTransitionGroup>
         </div>
