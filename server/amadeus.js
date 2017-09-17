@@ -1,6 +1,6 @@
 import axios from 'axios'
 import fs from 'fs'
-import { spawn } from 'child_process'
+import { exec } from 'child_process'
 
 export default class Amadeus {
   constructor(props) {
@@ -123,9 +123,16 @@ export default class Amadeus {
             if (err) {
               return console.log(err)
             }
-            const child = spawn('/tmp/rec.py y.csv X.csv test.csv')
-            child.stdout.on('data', data => console.log(data))
-            child.stderr.on('data', data => console.log(data))
+            const child = exec('/tmp/rec.py /tmp/y.csv /tmp/X.csv /tmp/dest.csv', (err, stdout, stderr) => {
+              if (err) {
+                return console.log(err)
+              }
+              console.log(stdout)
+              console.log(stderr)
+            })
+
+            //child.stdout.on('data', data => console.log(data))
+            //child.stderr.on('data', data => console.log(data))
           })
         })
 
