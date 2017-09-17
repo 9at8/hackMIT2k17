@@ -1,4 +1,4 @@
-# Hack Mi Travel
+# Hack MI Travel
 
 ### Inspiration
 We were motivated by the lack of personalization in ad campaigns and newsletters by companies like Expedia and Kayak. Therefore we decided to create a different traveling experience where users get more customized flight deals and trip recommendations.
