@@ -96,6 +96,7 @@ class App extends Component {
       console.log("Geolocation is not supported by this browser.");
     }
   }
+  
   onSelect(key) {
     this.state.selected.push(key);
 
@@ -104,6 +105,7 @@ class App extends Component {
       selected: this.state.selected
     });
   }
+
   unSelect(key) {
     const index = this.state.selected.indexOf(key);
     this.state.selected.splice(index, 1);
@@ -125,19 +127,23 @@ class App extends Component {
       locations.push(this.state.elements[index].location);
     }
 
-    console.log(locations);
     const fetchData = {
       method: "POST",
       mode: "cors",
       headers: {
         "Content-Type": "application/json"
       },
-      body: { locations }
+      body: JSON.stringify({ locations })
     };
-    fetch("/api/points-of-interest", fetchData).then(res => {
-      console.log(res);
-    });
+    fetch("/api/location-data", fetchData)
+      .then(res => {
+        return res.json()
+      })
+      .then(res => {
+        console.log(res)
+      })
   }
+
   render() {
     const { elements, numSelected } = this.state;
 
