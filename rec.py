@@ -3,6 +3,7 @@ from sklearn.preprocessing import Imputer
 import numpy as np
 import random
 import sys
+import json
 import csv
 
 
@@ -98,4 +99,5 @@ if __name__ == '__main__':
     return_prob.sort(key=lambda x: x[0], reverse=True)
     for i in return_prob:
         return_to_server.append(dest[i[1]])
+    return_to_server = json.dumps(return_to_server)
     print(return_to_server)
