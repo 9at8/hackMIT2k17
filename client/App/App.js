@@ -62,8 +62,10 @@ class App extends Component {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
+            location: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            }
           })
         };
         fetch("/api/points-of-interest", fetchData).then(res => {
