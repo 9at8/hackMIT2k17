@@ -19,22 +19,22 @@ import csv
 # 1 for selected
 
 ## add static dict for list of destinations (i.e. test_x values)
-dest = [["Santorini", 36.4071333,25.3504189],
-        ["Rome", 41.9099856,12.39557],
-        ["Ibiza", 38.9742588,1.2769595],
-        ["Lisbon", 38.7436056,-9.2304151],
-        ['Paris', 48.8588376,2.2768484],
-        ["Amsterdam", 52.3746325,4.7581968],
-        ["Hong Kong", 22.3524918,113.8468169],
-        ["Tokyo", 35.6732615,139.5699592],
-        ["Honolulu", 21.3279755,-157.9395033],
-        ["Maui", 20.8027672,-156.6188664],
-        ["Laguna Beach", 33.5472159,-117.8459009],
-        ["Las Vegas", 36.1249181,-115.3154287],
-        ["New York", 40.6971477,-74.2605552],
-        ["Toronto", 43.6565336,-79.6017223],
-        ["Sydney", -33.8479255,150.6510967],
-        ["Miami", 25.7823907,-80.2996707]]
+dest = [["Santorini", 36.4071333,25.3504189, "http://i.huffpost.com/gen/2735140/images/o-GREECE-facebook.jpg"],
+        ["Rome", 41.9099856,12.39557, "https://brightcove04pmdo-a.akamaihd.net/5104226627001/5104226627001_5232386545001_5215063851001-vs.jpg?pubId=5104226627001&videoId=5215063851001"],
+        ["Ibiza", 38.9742588,1.2769595, "https://content4travel.com/cms/img/u/kraj/1/ibiza_4.jpg?version=2"],
+        ["Lisbon", 38.7436056,-9.2304151, "http://www.telegraph.co.uk/content/dam/Travel/Destinations/Europe/Portugal/Lisbon/Lisbon---36-Hours---Rossio-Square-night-xlarge.jpg"],
+        ['Paris', 48.8588376,2.2768484, "http://www.telegraph.co.uk/content/dam/Travel/Destinations/Europe/France/Paris/paris-attractions-xlarge.jpg"],
+        ["Amsterdam", 52.3746325,4.7581968, "https://lonelyplanetimages.imgix.net/mastheads/stock-photo-beautiful-amsterdam-76796579.jpg?sharp=10&vib=20&w=1200"],
+        ["Hong Kong", 22.3524918,113.8468169, "http://www.hkexpress.com/sites/default/files/hong-kong%20bg%20image_2.jpg"],
+        ["Tokyo", 35.6732615,139.5699592, "http://cdn-image.travelandleisure.com/sites/default/files/styles/1600x1000/public/tokyo-mud-bath-bar-mudbath0716.jpg?itok=dJ8lDXJh"],
+        ["Honolulu", 21.3279755,-157.9395033, "https://cdn.thecrazytourist.com/wp-content/uploads/2016/06/Waikiki-Beach-Honolulu-1024x683.jpg"],
+        ["Maui", 20.8027672,-156.6188664, "http://cdn-image.travelandleisure.com/sites/default/files/styles/1600x1000/public/maui-facebook-maui-mu1115.jpg?itok=_lxNn8tG"],
+        ["Laguna Beach", 33.5472159,-117.8459009, "https://www.californiabeaches.com/wp-content/uploads/2014/09/laguna-beach2-e1466198100739.jpg"],
+        ["Las Vegas", 36.1249181,-115.3154287, "http://svcdn.simpleviewinc.com/v3/cache/lasvegas/14679F47EC9B965E4A510BFB528895CE.jpg"],
+        ["New York", 40.6971477,-74.2605552, "https://www.gentlegiant.com/wp-content/uploads/2015/06/New-York.jpg"],
+        ["Toronto", 43.6565336,-79.6017223, "https://web.toronto.ca/wp-content/uploads/2017/07/9163-invest-in-toronto-995x330.png"],
+        ["Sydney", -33.8479255,150.6510967, "https://lonelyplanetimages.imgix.net/mastheads/65830387.jpg?sharp=10&vib=20&w=1200"],
+        ["Miami", 25.7823907,-80.2996707, "http://cdn-image.travelandleisure.com/sites/default/files/styles/1600x1000/public/1446151328/miami-header-dg1015.jpg?itok=eIwFd7q_"]]
 
 ## generate fake data for destinations (no need for this anymore)
 # print(len(dest))
