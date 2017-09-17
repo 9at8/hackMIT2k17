@@ -127,13 +127,11 @@ class App extends Component {
 
   submit() {
     let locations = [];
-    // for (let index in this.state.selected) {
-    //   locations.push(this.state.elements[index].location);
-    // }
+    console.log(this.state.selected);
     this.state.elements.forEach((element, index) => {
       locations.push({
         location: element.location,
-        isSelected: index in this.state.selected
+        isSelected: this.state.selected.indexOf(index) !== -1
       });
     });
 
