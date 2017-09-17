@@ -15,10 +15,14 @@ MongoClient.connect(url, (err, db) => {
   console.log('Connected to MongoDB!')
 })
 
-const AmadeusApp = new Amadeus({ app })
+const AmadeusApp = new Amadeus()
 
 app.post('/api/points-of-interest', (req, res) => {
   AmadeusApp.pointsOfInterest(req, res)
+})
+
+app.post('/api/location-data', (req, res) => {
+  AmadeusApp.getDataFromLocation(req, res)
 })
 
 app.get('/', function (req, res) {
