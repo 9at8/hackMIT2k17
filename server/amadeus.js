@@ -140,11 +140,12 @@ export default class Amadeus {
                   }
                 })
               }
+              res.json(json_output)
             })
           })
         })
 
-        res.json(json_output)
+
       })
       .catch(err => console.log(err))
   }
