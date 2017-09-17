@@ -27,12 +27,14 @@ class App extends Component {
       hasMore: true,
       elements: null,
       position: null,
-      numSelected: 0
+      numSelected: 0,
+      selected: []
     };
 
     this.loadMore = this.loadMore.bind(this);
     this.onSelect = this.onSelect.bind(this);
     this.unSelect = this.unSelect.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   loadMore() {
@@ -83,6 +85,7 @@ class App extends Component {
             return res.json();
           })
           .then(res => {
+            console.log(res.pointsOfInterest);
             this.setState({
               position: position,
               elements: res.pointsOfInterest
@@ -93,14 +96,46 @@ class App extends Component {
       console.log("Geolocation is not supported by this browser.");
     }
   }
-  onSelect() {
+  onSelect(key) {
+    this.state.selected.push(key);
+
     this.setState({
-      numSelected: this.state.numSelected + 1
+      numSelected: this.state.numSelected + 1,
+      selected: this.state.selected
     });
   }
-  unSelect() {
-    this.setState({
-      numSelected: this.state.numSelected - 1
+  unSelect(key) {
+    const index = this.state.selected.indexOf(key);
+    this.state.selected.splice(index, 1);
+
+    this.setState(
+      {
+        numSelected: this.state.numSelected - 1,
+        selected: this.state.selected
+      },
+      () => {
+        console.log(this.state.selected);
+      }
+    );
+  }
+
+  submit() {
+    let locations = [];
+    for (let index in this.state.selected) {
+      locations.push(this.state.elements[index].location);
+    }
+
+    console.log(locations);
+    const fetchData = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: { locations }
+    };
+    fetch("/api/points-of-interest", fetchData).then(res => {
+      console.log(res);
     });
   }
   render() {
@@ -123,7 +158,6 @@ class App extends Component {
                   <div className="sk-cube3 sk-cube" />
                 </div>
               }
-              loadMore={this.loadMore}
             >
               {elements.map(
                 ({ title, image, description, googleMapsLink }, i) => (
@@ -132,6 +166,7 @@ class App extends Component {
                     image={image}
                     description={description}
                     key={i}
+                    index={i}
                     onSelect={this.onSelect}
                     unSelect={this.unSelect}
                   />
@@ -140,7 +175,7 @@ class App extends Component {
             </Masonry>
           ) : null}
         </div>
-        <Fab show={numSelected == 0 ? false : true} />
+        <Fab show={numSelected == 0 ? false : true} onClick={this.submit} />
       </div>
     );
   }

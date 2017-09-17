@@ -5,7 +5,8 @@ export default class Card extends Component {
     super(props);
 
     this.state = {
-      selected: false
+      selected: false,
+      location: null
     };
 
     this.toggle = this.toggle.bind(this);
@@ -17,9 +18,9 @@ export default class Card extends Component {
       },
       () => {
         if (this.state.selected) {
-          this.props.onSelect();
+          this.props.onSelect(this.props.index);
         } else {
-          this.props.unSelect();
+          this.props.unSelect(this.props.index);
         }
       }
     );
