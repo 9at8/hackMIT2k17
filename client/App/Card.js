@@ -11,6 +11,7 @@ export default class Card extends Component {
 
     this.toggle = this.toggle.bind(this);
   }
+
   toggle() {
     this.setState(
       {

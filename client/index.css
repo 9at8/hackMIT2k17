@@ -42,10 +42,15 @@ h3 {
   padding-bottom: 16px;
   margin-bottom: 16px;
   padding-top: 32px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
 }
 
 .masonry {
   margin: 0 auto;
+  transition: all 0.5 ease-in-out;
+  position: relative;
 }
 
 .card {
@@ -57,6 +62,7 @@ h3 {
   align-items: flex-end;
   background-repeat: no-repeat;
   background-size: cover;
+  transition: all 0.5 ease-in-out;
 }
 
 .card:hover {
@@ -220,4 +226,67 @@ h3 {
   border-radius: 50%;
   background: linear-gradient(to bottom, #00b09b, #96c93d);
   cursor: pointer;
+}
+
+example-component {
+  -webkit-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -o-transition: 0.5s;
+  transition: 0.5s;
+  opacity: 0;
+  visibility: hidden;
+}
+.example-enter {
+  opacity: 0.01;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.example-leave {
+  opacity: 1;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+.suggestion {
+  width: 60vw;
+  background-color: #f6f8fa;
+  height: 250px;
+  display: flex;
+  margin: 20px;
+  position: relative;
+  /* box-shadow: 0 7px 7px rgba(0, 0, 0, 0.3); */
+}
+
+.sug_img {
+  flex: 7;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+.sug_map {
+  flex: 3;
+  height: 100%;
+  /* background-size: cover;
+  background-position: center; */
+}
+
+.content-container {
+  padding: 2%;
+  flex: 5;
+  position: absolute;
+  bottom: 0;
+}
+
+.content-container > h4 {
+  font-size: 1.7vw;
+  margin: 5px 0;
+  font-weight: 500;
+  color: #fff;
 }

@@ -4,6 +4,9 @@ import Masonry from "react-masonry-infinite";
 import shortid from "shortid";
 import Card from "./Card";
 import Fab from "./Fab";
+import { CSSTransitionGroup } from "react-transition-group";
+import Suggestion from "./Suggestion";
+
 const colors = [
   "#EC407A",
   "#EF5350",
@@ -28,7 +31,8 @@ class App extends Component {
       elements: null,
       position: null,
       numSelected: 0,
-      selected: []
+      selected: [],
+      suggesting: false
     };
 
     this.loadMore = this.loadMore.bind(this);
@@ -66,6 +70,7 @@ class App extends Component {
   componentDidMount() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
+        // console.log(position);
         const fetchData = {
           method: "POST",
           mode: "cors",
@@ -85,7 +90,6 @@ class App extends Component {
             return res.json();
           })
           .then(res => {
-            console.log(res.pointsOfInterest);
             this.setState({
               position: position,
               elements: res.pointsOfInterest
@@ -127,9 +131,16 @@ class App extends Component {
     //   locations.push(this.state.elements[index].location);
     // }
     this.state.elements.forEach((element, index) => {
-      locations.push({ location: element.location, isSelected: index in this.state.selected })
-    })
+      locations.push({
+        location: element.location,
+        isSelected: index in this.state.selected
+      });
+    });
 
+    this.setState({
+      elements: null,
+      suggesting: true
+    });
     const fetchData = {
       method: "POST",
       mode: "cors",
@@ -138,53 +149,87 @@ class App extends Component {
       },
       body: JSON.stringify({ locations })
     };
+
     fetch("/api/location-data", fetchData)
       .then(res => {
-        return res.json()
+        return res.json();
       })
       .then(res => {
-        console.log(res)
-      })
+        console.log(res);
+      });
   }
 
   render() {
-    const { elements, numSelected } = this.state;
+    const { elements, numSelected, position, suggesting } = this.state;
+
+    const dummyList = [0, 1, 2, 3, 4, 5];
+    const suggestions = dummyList.map(i => {
+      return (
+        <Suggestion
+          name="HackMIT"
+          lat="42.3584"
+          long="-71.09"
+          image="http://media.erickpinos.com/14-10-13-HackMIT-04-Tara-Lee-Technique.jpg"
+        />
+      );
+    });
 
     return (
       <div className="App">
-        <h1>Destination Unknown? Let's find some</h1>
-        <h3>Click on some local places you've visited and liked</h3>
+        <h1>
+          {suggesting ? (
+            "Here are some suggestions"
+          ) : (
+            "Destination Unknown? Let's find some"
+          )}
+        </h1>
+        <h3>
+          {suggesting ? null : (
+            "Click on some local places you've visited and liked"
+          )}{" "}
+        </h3>
         <div className="container">
-          {elements ? (
-            <Masonry
-              className="masonry"
-              hasMore={this.state.hasMore}
-              loader={
-                <div className="sk-folding-cube">
-                  <div className="sk-cube1 sk-cube" />
-                  <div className="sk-cube2 sk-cube" />
-                  <div className="sk-cube4 sk-cube" />
-                  <div className="sk-cube3 sk-cube" />
-                </div>
-              }
-            >
-              {elements.map(
-                ({ title, image, description, googleMapsLink }, i) => (
-                  <Card
-                    title={title}
-                    image={image}
-                    description={description}
-                    key={i}
-                    index={i}
-                    onSelect={this.onSelect}
-                    unSelect={this.unSelect}
-                  />
-                )
-              )}
-            </Masonry>
-          ) : null}
+          <CSSTransitionGroup
+            transitionName="example"
+            transitionEnterTimeout={500}
+            transitionLeaveTimeout={300}
+          >
+            {elements ? (
+              <Masonry
+                className="masonry"
+                hasMore={this.state.hasMore}
+                loader={
+                  <div className="sk-folding-cube">
+                    <div className="sk-cube1 sk-cube" />
+                    <div className="sk-cube2 sk-cube" />
+                    <div className="sk-cube4 sk-cube" />
+                    <div className="sk-cube3 sk-cube" />
+                  </div>
+                }
+              >
+                {elements.map(
+                  ({ title, image, description, googleMapsLink }, i) => (
+                    <Card
+                      title={title}
+                      image={image}
+                      description={description}
+                      key={i}
+                      index={i}
+                      onSelect={this.onSelect}
+                      unSelect={this.unSelect}
+                    />
+                  )
+                )}
+              </Masonry>
+            ) : suggesting ? (
+              suggestions
+            ) : null}
+          </CSSTransitionGroup>
         </div>
-        <Fab show={numSelected == 0 ? false : true} onClick={this.submit} />
+        <Fab
+          show={numSelected == 0 || suggesting ? false : true}
+          onClick={this.submit}
+        />
       </div>
     );
   }
