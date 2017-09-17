@@ -1,10 +1,19 @@
 body {
   background: rgb(0, 188, 212);
+  /* background: linear-gradient(to bottom, rgb(0, 188, 212), rgb(86, 145, 200)); */
+
   font-family: "helvetica", sans-serif;
   padding: 0;
   margin: 0;
 }
+a {
+  color: #fff;
+  text-decoration: none;
+}
 
+a:hover {
+  text-decoration: underline;
+}
 .App {
   height: 100%;
   width: 100%;
@@ -14,7 +23,17 @@ h1 {
   font-size: 2.5vw;
   font-weight: 300;
   color: #fff;
-  margin: 2em 0;
+  margin: 0;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+
+h3 {
+  font-size: 1.5vw;
+  font-weight: 300;
+  color: #fff;
+  margin-bottom: 2em;
   text-align: center;
 }
 
@@ -36,25 +55,38 @@ h1 {
   flex-flow: column nowrap;
   justify-content: flex-end;
   align-items: flex-end;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
+.card:hover {
+  cursor: pointer;
+}
+
+.check {
+  position: absolute;
+  top: 15px;
+  right: 10px;
+}
 .content {
   display: flex;
   flex-flow: row-reverse wrap;
   padding-bottom: 30px;
-  padding-right: 10%;
+  padding-right: 5%;
+  padding-left: 5%;
   position: absolute;
   bottom: 0;
   right: 0;
 }
 
-.content > h2 {
+.content h2 {
   font-size: 2.5em;
   font-weight: 500;
   color: #fff;
   margin: 0;
   padding: 0;
   position: relative;
+  text-align: right;
 }
 
 .content > p {
@@ -65,12 +97,6 @@ h1 {
   font-size: 1em;
   font-weight: 300;
   color: #f4f4f4;
-}
-
-a {
-  position: absolute;
-  top: 8px;
-  right: 8px;
 }
 
 .icon {
@@ -183,4 +209,15 @@ a {
     transform: perspective(140px) rotateY(180deg);
     opacity: 0;
   }
+}
+
+.fab {
+  position: fixed;
+  bottom: 10vh;
+  right: 7vw;
+  margin: 0;
+  padding: 10px;
+  border-radius: 50%;
+  background: linear-gradient(to bottom, #00b09b, #96c93d);
+  cursor: pointer;
 }

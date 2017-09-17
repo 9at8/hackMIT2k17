@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 import Masonry from "react-masonry-infinite";
 import shortid from "shortid";
+import Card from "./Card";
+import Fab from "./Fab";
 const colors = [
   "#EC407A",
   "#EF5350",
@@ -18,43 +20,50 @@ const colors = [
   "#EF6C00"
 ];
 
-const heights = [350, 350, 400, 400, 450, 450];
-
-const getRandomElement = array =>
-  array[Math.floor(Math.random() * array.length)];
-
-const generateElements = () =>
-  [...Array(10).keys()].map(() => ({
-    key: shortid.generate(),
-    color: getRandomElement(colors),
-    height: `${getRandomElement(heights)}px`
-  }));
-
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       hasMore: true,
-      elements: generateElements()
+      elements: null,
+      position: null,
+      numSelected: 0
     };
+
+    this.loadMore = this.loadMore.bind(this);
+    this.onSelect = this.onSelect.bind(this);
+    this.unSelect = this.unSelect.bind(this);
   }
 
-  loadMore = () =>
-    setTimeout(
-      () =>
-        this.setState(state => ({
-          elements: state.elements.concat(generateElements())
-        })),
-      2500
-    );
+  loadMore() {
+    const { position, elements } = this.state;
+    const fetchData = {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        location: {
+          latitude: position.coords.latitude.toFixed(2),
+          longitude: position.coords.longitude.toFixed(2)
+        }
+      })
+    };
+    fetch("/api/points-of-interest", fetchData)
+      .then(res => {
+        return res.json();
+      })
+      .then(res => {
+        this.setState({
+          elements: elements.concat(res.pointsOfInterest)
+        });
+      });
+  }
 
   componentDidMount() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
-        console.log(position.coords.latitude);
-        console.log(position.coords.longitude);
-
-        console.log(position.coords);
         const fetchData = {
           method: "POST",
           mode: "cors",
@@ -63,51 +72,75 @@ class App extends Component {
           },
           body: JSON.stringify({
             location: {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
+              latitude: position.coords.latitude.toFixed(2),
+              longitude: position.coords.longitude.toFixed(2)
             }
+            // numberOfResults: 14
           })
         };
-        fetch("/api/points-of-interest", fetchData).then(res => {
-          console.log(res.json());
-        });
+        fetch("/api/points-of-interest", fetchData)
+          .then(res => {
+            return res.json();
+          })
+          .then(res => {
+            this.setState({
+              position: position,
+              elements: res.pointsOfInterest
+            });
+          });
       });
     } else {
       console.log("Geolocation is not supported by this browser.");
     }
   }
+  onSelect() {
+    this.setState({
+      numSelected: this.state.numSelected + 1
+    });
+  }
+  unSelect() {
+    this.setState({
+      numSelected: this.state.numSelected - 1
+    });
+  }
   render() {
+    const { elements, numSelected } = this.state;
+
     return (
       <div className="App">
-        <h1>Destination Unknown? Try our recommendations</h1>
+        <h1>Destination Unknown? Let's find some</h1>
+        <h3>Click on some local places you've visited and liked</h3>
         <div className="container">
-          <Masonry
-            className="masonry"
-            hasMore={this.state.hasMore}
-            loader={
-              <div className="sk-folding-cube">
-                <div className="sk-cube1 sk-cube" />
-                <div className="sk-cube2 sk-cube" />
-                <div className="sk-cube4 sk-cube" />
-                <div className="sk-cube3 sk-cube" />
-              </div>
-            }
-            loadMore={this.loadMore}
-          >
-            {this.state.elements.map(({ key, color, height }, i) => (
-              <div
-                key={key}
-                className="card"
-                style={{ background: color, height }}
-              >
-                <div className="content">
-                  <h2>Test</h2>
-                  <p>This is a fancy location.</p>
+          {elements ? (
+            <Masonry
+              className="masonry"
+              hasMore={this.state.hasMore}
+              loader={
+                <div className="sk-folding-cube">
+                  <div className="sk-cube1 sk-cube" />
+                  <div className="sk-cube2 sk-cube" />
+                  <div className="sk-cube4 sk-cube" />
+                  <div className="sk-cube3 sk-cube" />
                 </div>
-              </div>
-            ))}
-          </Masonry>
+              }
+              loadMore={this.loadMore}
+            >
+              {elements.map(
+                ({ title, image, description, googleMapsLink }, i) => (
+                  <Card
+                    title={title}
+                    image={image}
+                    description={description}
+                    key={i}
+                    onSelect={this.onSelect}
+                    unSelect={this.unSelect}
+                  />
+                )
+              )}
+            </Masonry>
+          ) : null}
         </div>
+        <Fab show={numSelected == 0 ? false : true} />
       </div>
     );
   }
