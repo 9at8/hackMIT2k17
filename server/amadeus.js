@@ -127,16 +127,24 @@ export default class Amadeus {
               if (err) {
                 return console.log(err)
               }
-              console.log(stdout)
-              console.log(stderr)
-            })
 
-            //child.stdout.on('data', data => console.log(data))
-            //child.stderr.on('data', data => console.log(data))
+              let output = '{"stdout":' + stdout + '}'
+              output = JSON.parse(output)
+              let json_output = {
+                data: output.stdout.map(data => {
+                  return {
+                    name: data[0],
+                    latitude: data[1],
+                    longitude: data[2],
+                    image: data[3]
+                  }
+                })
+              }
+            })
           })
         })
 
-        // res.send(csvResponses)
+        res.json(json_output)
       })
       .catch(err => console.log(err))
   }
