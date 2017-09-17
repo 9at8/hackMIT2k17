@@ -9,6 +9,7 @@ export default class Suggestion extends Component {
         rgba(0, 0, 0, 0),
         rgba(0, 0, 0, 0.6)
       ), url(${image})`;
+    console.log(backgroundImage);
 
     const backgroundMap = `https://maps.googleapis.com/maps/api/staticmap?center=${lat}%2c%20${long}
     &zoom=12&size=400x400&key=AIzaSyCUWkYt6IF3TfN41KUoPJu-aKm3-tOMoeY

@@ -176,7 +176,7 @@ class App extends Component {
             name={suggestion.name}
             lat={suggestion.latitude}
             long={suggestion.longitude}
-            image={location.image}
+            image={suggestion.image}
           />
         );
       });
