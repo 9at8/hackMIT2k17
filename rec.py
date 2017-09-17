@@ -66,7 +66,6 @@ def parse_test():
 def rank_train(X, y):
     imputer = Imputer(missing_values = -900, strategy = "median", axis = 0)
     X = imputer.fit_transform(X)
-    print(X)
     clf = RandomForestClassifier(max_depth=2, random_state=0)
     clf.fit(X, y)
     RandomForestClassifier(bootstrap=True, class_weight=None, criterion='gini',
@@ -89,4 +88,14 @@ if __name__ == '__main__':
     clf = rank_train(X,y)
     test = parse_test()
     pred = rank_pred(test,clf)
-    print(pred)
+    results = pred.tolist()
+    return_prob = []
+    return_to_server = []
+    index = 0
+    for i in results:
+        return_prob.append([i[1], index])
+        index += 1
+    return_prob.sort(key=lambda x: x[0], reverse=True)
+    for i in return_prob:
+        return_to_server.append(dest[i[1]])
+    print(return_to_server)
