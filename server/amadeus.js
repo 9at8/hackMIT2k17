@@ -38,14 +38,65 @@ export default class Amadeus {
     const query = (latitude, longitude) =>
       `https://graph.facebook.com/v2.10/current_place/results?coordinates={"latitude":${latitude},"longitude":${longitude}}&fields=checkins,description,engagement,name,overall_star_rating,price_range,rating_count&limit=1&access_token=${this
         .facebookAppID}|${this.facebookAppSecret}`
+    let selectedLocations = []
     Promise.all(
-      locations.map(location =>
-        axios.get(query(location.latitude, location.longitude))
-      )
+      locations.map(data => {
+        selectedLocations.push(data.isSelected)
+        return axios.get(query(data.location.latitude, data.location.longitude))
+      })
     )
-      .then(responses =>
-        res.json({ responses: responses.map(response => response.data.data[0]) })
+      .then(responses => {
+        return responses.map((response, index) => {
+          return { data: response.data.data[0], isSelected: selectedLocations[index] }
+        })
+      })
+
+      // data cleanup
+      .then(responses => {
+          return responses.reduce((acc, response) => {
+            let cleanResponse = {}
+            if (response.data) {
+              cleanResponse = {
+                checkins: response.data.checkins ? response.data.checkins : -900,
+                description: response.data.description ? response.data.description : -900,
+                engagement: response.data.engagement ? response.data.engagement.count : -900,
+                overallStarRating: response.data.overall_star_rating ? response.data.overall_star_rating : -900,
+                priceRange: response.data.price_range ? response.data.price_range.length : -900,
+                ratingCount: response.data.rating_count ? response.data.rating_count : -900,
+                isSelected: response.isSelected
+              }
+            } else {
+              cleanResponse = null
+            }
+
+            if (cleanResponse) {
+              let numberOfDirtyValues = 0
+              for (let key in cleanResponse) {
+                if (cleanResponse.hasOwnProperty(key) && cleanResponse[key] === -900) {
+                  numberOfDirtyValues++
+                }
+              }
+
+              if (numberOfDirtyValues <= 3) {
+                acc.push(cleanResponse)
+              }
+            }
+
+            return acc
+          }, [])
+        }
       )
+
+      // Make a csv out of these objects
+      .then(cleanResponses => {
+        let csvResponses = []
+        cleanResponses.forEach(response => {
+          csvResponses.push(`${response.checkins},${response.description},${response.engagement},${response.overallStarRating},${response.priceRange},${response.ratingCount}`)
+        })
+        csvResponses.join('\n')
+        // res.send(csvResponses)
+        res.send("hello world")
+      })
       .catch(err => console.log(err))
   }
 }
