@@ -1,4 +1,6 @@
-import axios from "axios"
+import axios from 'axios'
+import fs from 'fs'
+import { spawn } from 'child_process'
 
 export default class Amadeus {
   constructor(props) {
@@ -58,9 +60,9 @@ export default class Amadeus {
             if (response.data) {
               cleanResponse = {
                 checkins: response.data.checkins ? response.data.checkins : -900,
-                description: response.data.description ? response.data.description : -900,
+                description: Math.round(Math.random() * 10),
                 engagement: response.data.engagement ? response.data.engagement.count : -900,
-                overallStarRating: response.data.overall_star_rating ? response.data.overall_star_rating : -900,
+                overallStarRating: response.data.overall_star_rating ? response.data.overall_star_rating * 10 : -900,
                 priceRange: response.data.price_range ? response.data.price_range.length : -900,
                 ratingCount: response.data.rating_count ? response.data.rating_count : -900,
                 isSelected: response.isSelected
@@ -87,15 +89,47 @@ export default class Amadeus {
         }
       )
 
+      // .then(cleanResponses => {
+      //   let sentimentResponses = []
+      //   cleanResponses.forEach(response => {
+      //     if (response.description !== -900) {
+      //       sentimentResponses.push(indico.sentimentHQ(response.description))
+      //     } else {
+      //       sentimentResponses.push(-900)
+      //     }
+      //   })
+      //   return { sentimentResponses: Promise.all(sentimentResponses), cleanResponses }
+      // })
+      //
+      // .then(finalResponses => {
+      //   console.log(finalResponses.sentimentResponses)
+      //   return finalResponses.cleanResponses
+      // })
+
       // Make a csv out of these objects
       .then(cleanResponses => {
-        let csvResponses = []
+        let csvResponses = ''
+        let csvDecisions = ''
         cleanResponses.forEach(response => {
-          csvResponses.push(`${response.checkins},${response.description},${response.engagement},${response.overallStarRating},${response.priceRange},${response.ratingCount}`)
+          csvResponses += `${response.checkins},${response.description},${response.engagement},${response.overallStarRating},${response.priceRange},${response.ratingCount}\n`
+          csvDecisions += `${response.isSelected ? 1 : 0}\n`
         })
-        csvResponses.join('\n')
+
+        fs.writeFile('/tmp/X.csv', csvResponses, err => {
+          if (err) {
+            return console.log(err)
+          }
+          fs.writeFile('/tmp/y.csv', csvDecisions, err => {
+            if (err) {
+              return console.log(err)
+            }
+            const child = spawn('/tmp/rec.py y.csv X.csv test.csv')
+            child.stdout.on('data', data => console.log(data))
+            child.stderr.on('data', data => console.log(data))
+          })
+        })
+
         // res.send(csvResponses)
-        res.send("hello world")
       })
       .catch(err => console.log(err))
   }
