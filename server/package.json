@@ -8,7 +8,7 @@
     "build": "webpack --config webpack.config.js",
     "start": "nodemon dist/server.js --watch dist/server.js",
     "dev:server": "webpack --config webpack.config.js --watch",
-    "dev:start": "cp -ruf public dist/public && nodemon dist/server.js --watch dist/server.js"
+    "dev:start": "cp -rf public dist/public && nodemon dist/server.js --watch dist/server.js"
   },
   "author": "",
   "license": "ISC",
